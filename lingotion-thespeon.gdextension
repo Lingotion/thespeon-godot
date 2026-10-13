@@ -1,0 +1,64 @@
+[configuration]
+
+entry_symbol = "thespeon_library_init"
+compatibility_minimum = "4.4"
+reloadable = false
+
+[libraries]
+
+windows.editor.x86_64 = "res://addons/lingotion-thespeon/bin/thespeon.windows.template_debug.x86_64.dll"
+windows.debug.x86_64 = "res://addons/lingotion-thespeon/bin/thespeon.windows.template_debug.x86_64.dll"
+windows.release.x86_64 = "res://addons/lingotion-thespeon/bin/thespeon.windows.template_release.x86_64.dll"
+macos.editor = "res://addons/lingotion-thespeon/bin/thespeon.macos.template_debug.dylib"
+macos.debug = "res://addons/lingotion-thespeon/bin/thespeon.macos.template_debug.dylib"
+macos.release = "res://addons/lingotion-thespeon/bin/thespeon.macos.template_debug.dylib"
+linux.editor = "res://addons/lingotion-thespeon/bin/thespeon.linux.template_debug.x86_64.so"
+linux.debug = "res://addons/lingotion-thespeon/bin/thespeon.linux.template_debug.x86_64.so"
+linux.release = "res://addons/lingotion-thespeon/bin/thespeon.linux.template_debug.x86_64.so"
+
+[dependencies]
+
+windows.editor = {
+    "res://addons/lingotion-thespeon/bin/thespeon.dll": "",
+    "res://addons/lingotion-thespeon/bin/onnxruntime.dll": ""
+}
+
+windows.debug = {
+    "res://addons/lingotion-thespeon/bin/thespeon.dll": "",
+    "res://addons/lingotion-thespeon/bin/onnxruntime.dll": ""
+}
+
+windows.release = {
+    "res://addons/lingotion-thespeon/bin/thespeon.dll": "",
+    "res://addons/lingotion-thespeon/bin/onnxruntime.dll": ""
+}
+
+macos.editor = {
+    "res://addons/lingotion-thespeon/bin/libthespeon.dylib": "",
+    "res://addons/lingotion-thespeon/bin/libonnxruntime.dylib": ""
+}
+
+macos.debug = {
+    "res://addons/lingotion-thespeon/bin/libthespeon.dylib": "",
+    "res://addons/lingotion-thespeon/bin/libonnxruntime.dylib": ""
+}
+
+macos.release = {
+    "res://addons/lingotion-thespeon/bin/libthespeon.dylib": "",
+    "res://addons/lingotion-thespeon/bin/libonnxruntime.dylib": ""
+}
+
+linux.editor = {
+    "res://addons/lingotion-thespeon/bin/libthespeon.so": "",
+    "res://addons/lingotion-thespeon/bin/libonnxruntime.so": ""
+}
+
+linux.debug = {
+    "res://addons/lingotion-thespeon/bin/libthespeon.so": "",
+    "res://addons/lingotion-thespeon/bin/libonnxruntime.so": ""
+}
+
+linux.release = {
+    "res://addons/lingotion-thespeon/bin/libthespeon.so": "",
+    "res://addons/lingotion-thespeon/bin/libonnxruntime.so": ""
+}

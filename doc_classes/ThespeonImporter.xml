@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="ThespeonImporter" inherits="RefCounted" api_type="extension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Imports and deletes Thespeon modules.
+	</brief_description>
+	<description>
+		Manages the modules installed in the addon's [code]res://addons/lingotion-thespeon/runtime-files/[/code] directory. Every method blocks, and none of them loads a model, so this class suits editor tools.
+		A [Thespeon] node that already exists does not see the changes until [method Thespeon.refresh] is called.
+		[b]Warning:[/b] Do not delete modules while any [Thespeon] node, in any process, has models loaded.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="delete_all_models">
+			<return type="Dictionary" />
+			<description>
+				Deletes every installed module. Returns the same [Dictionary] as [method preview_delete].
+			</description>
+		</method>
+		<method name="delete_model">
+			<return type="Dictionary" />
+			<param index="0" name="model" type="String" />
+			<param index="1" name="module_type" type="String" default="&quot;&quot;" />
+			<param index="2" name="module_version" type="String" default="&quot;&quot;" />
+			<param index="3" name="force" type="bool" default="false" />
+			<description>
+				Deletes one module, and every file no remaining module needs. The parameters select the module as in [method preview_delete].
+				Deleting a language module that a remaining character depends on fails unless [param force] is [code]true[/code]. Returns the same [Dictionary] as [method preview_delete].
+			</description>
+		</method>
+		<method name="import_pack">
+			<return type="int" enum="Error" />
+			<param index="0" name="pack_path" type="String" />
+			<description>
+				Imports the modules in the [code].lingotion[/code] pack at [param pack_path].
+			</description>
+		</method>
+		<method name="list_models">
+			<return type="Dictionary" />
+			<description>
+				Returns the installed modules, in the same form as [method Thespeon.list_models]. Returns an empty [Dictionary], and prints an error, if the directory cannot be read.
+			</description>
+		</method>
+		<method name="preview_delete">
+			<return type="Dictionary" />
+			<param index="0" name="model" type="String" />
+			<param index="1" name="module_type" type="String" default="&quot;&quot;" />
+			<param index="2" name="module_version" type="String" default="&quot;&quot;" />
+			<description>
+				Reports what [method delete_model] would do, without changing anything. If [param model] is empty, previews [method delete_all_models] instead.
+				[param model] is a module identifier or a display name. [param module_type] applies only to characters. [param module_type] and [param module_version] are ignored when empty.
+				Returns a [Dictionary] with the keys:
+				- [code]status[/code]: an [enum Error] code.
+				- [code]binaries_removed[/code]: the number of files that would be removed.
+				- [code]bytes_freed[/code]: the disk space that would be freed.
+				- [code]binaries_kept[/code]: the number of files kept because a remaining module still needs them.
+				- [code]stranded_characters[/code]: the number of characters that would be left with no language module. [method delete_model] refuses to strand characters unless [code]force[/code] is set.
+				- [code]problems[/code]: the number of module configs that could not be read.
+				- [code]swept[/code]: [code]false[/code] if problems prevented removing files, in which case [code]binaries_removed[/code] and [code]bytes_freed[/code] are [code]0[/code].
+			</description>
+		</method>
+	</methods>
+</class>

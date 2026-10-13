@@ -1,0 +1,21 @@
+# Extra files to include in the addon zip, one repo-relative path per line.
+# Blank lines and # comments are ignored.
+#
+# lingotion-thespeon.gdextension and everything in bin/ are always included, so they do not
+# need listing here. Each path keeps its relative location inside the addon, so
+# "docs/usage.md" lands at addons/lingotion-thespeon/docs/usage.md.
+#
+
+# Editor plugin files
+plugin.cfg
+editor/thespeon_editor_plugin.gd
+editor/thespeon_info_window.gd
+
+# Demo scene
+demo/thespeon_demo.gd
+demo/thespeon_demo.tscn
+
+# License and third-party notices
+LICENSE.md
+THIRD_PARTY_NOTICES.md
+third_party/libthespeon/THIRD_PARTY_NOTICES.md

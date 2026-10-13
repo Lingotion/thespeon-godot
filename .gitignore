@@ -1,0 +1,10 @@
+# CMake
+/build/
+
+# Everything in bin/ and lib/ is now produced by the build: the extension itself,
+# plus thespeon and onnxruntime staged out of the libthespeon sub-build.
+/bin/
+/lib/
+
+# Packaged addon zips.
+/dist/

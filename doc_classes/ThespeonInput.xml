@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="ThespeonInput" inherits="RefCounted" api_type="extension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Describes what a [Thespeon] node should say, and how.
+	</brief_description>
+	<description>
+		One synthesis input: a character, default language and emotion, and one or more text segments that can each override the language, emotion, speed and loudness. A new input has English as its default language and no segments.
+		The setters reject only malformed arguments. Other problems, such as no character being set, are reported by [method to_json], [method Thespeon.validate_input] and the synthesis methods.
+		[b]Note:[/b] An input must not be used from two threads at once.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="add_segment">
+			<return type="int" />
+			<param index="0" name="text" type="String" />
+			<description>
+				Appends a segment of text and returns its index, or [code]-1[/code] on error. Use the index with the [code]segment_*[/code] methods.
+				A sample-request marker ([code]◎[/code], U+25CE) in [param text] reports where in the audio it falls, through [signal ThespeonAudioStream.samples_requested].
+			</description>
+		</method>
+		<method name="from_json" qualifiers="static">
+			<return type="ThespeonInput" />
+			<param index="0" name="json" type="String" />
+			<description>
+				Creates an input from a JSON document, such as one made by [method to_json]. Returns [code]null[/code], and prints an error, if the document is invalid.
+			</description>
+		</method>
+		<method name="segment_add_emotion">
+			<return type="int" enum="Error" />
+			<param index="0" name="segment" type="int" />
+			<param index="1" name="at" type="int" enum="ThespeonInput.Endpoint" />
+			<param index="2" name="emotion" type="String" />
+			<param index="3" name="weight" type="float" />
+			<description>
+				Adds [param emotion] with [param weight] to the emotion blend at the start or end of [param segment]. Adding an emotion that is already in the blend replaces its weight.
+			</description>
+		</method>
+		<method name="segment_set_custom_pronounced">
+			<return type="int" enum="Error" />
+			<param index="0" name="segment" type="int" />
+			<param index="1" name="enabled" type="bool" default="true" />
+			<description>
+				If [param enabled] is [code]true[/code], the text of [param segment] is read as IPA rather than as ordinary text.
+			</description>
+		</method>
+		<method name="segment_set_emotion">
+			<return type="int" enum="Error" />
+			<param index="0" name="segment" type="int" />
+			<param index="1" name="emotion" type="String" />
+			<description>
+				Sets a single emotion for [param segment], used at any endpoint that has no blend from [method segment_add_emotion]. An empty [param emotion] unsets it.
+			</description>
+		</method>
+		<method name="segment_set_language">
+			<return type="int" enum="Error" />
+			<param index="0" name="segment" type="int" />
+			<param index="1" name="language" type="Dictionary" />
+			<description>
+				Overrides the language of [param segment]. [param language] has the same keys as in [method set_default_language]. An empty [Dictionary] unsets the override.
+			</description>
+		</method>
+		<method name="segment_set_loudness">
+			<return type="int" enum="Error" />
+			<param index="0" name="segment" type="int" />
+			<param index="1" name="at" type="int" enum="ThespeonInput.Endpoint" />
+			<param index="2" name="loudness" type="float" />
+			<description>
+				Sets the loudness at the start or end of [param segment].
+			</description>
+		</method>
+		<method name="segment_set_speed">
+			<return type="int" enum="Error" />
+			<param index="0" name="segment" type="int" />
+			<param index="1" name="at" type="int" enum="ThespeonInput.Endpoint" />
+			<param index="2" name="speed" type="float" />
+			<description>
+				Sets the speaking speed at the start or end of [param segment].
+			</description>
+		</method>
+		<method name="set_character">
+			<return type="int" enum="Error" />
+			<param index="0" name="character_name" type="String" />
+			<param index="1" name="module_type" type="String" default="&quot;&quot;" />
+			<param index="2" name="module_version" type="String" default="&quot;&quot;" />
+			<description>
+				Selects the character by name, optionally narrowed by [param module_type] and [param module_version]. Replaces any module set with [method set_character_module].
+			</description>
+		</method>
+		<method name="set_character_module">
+			<return type="int" enum="Error" />
+			<param index="0" name="module_identifier" type="String" />
+			<description>
+				Selects the character by module identifier. Replaces any character set with [method set_character].
+			</description>
+		</method>
+		<method name="set_default_emotion">
+			<return type="int" enum="Error" />
+			<param index="0" name="emotion" type="String" />
+			<description>
+				Sets the emotion used by segments that set none. An empty [param emotion] unsets it. See [method Thespeon.get_emotions_for_character] for the emotions a character supports.
+			</description>
+		</method>
+		<method name="set_default_language">
+			<return type="int" enum="Error" />
+			<param index="0" name="language" type="Dictionary" />
+			<description>
+				Sets the language used by segments that set none. [param language] has the keys [code]iso639_2[/code] (required), [code]iso639_3[/code], [code]glottocode[/code], [code]iso3166_1[/code], [code]iso3166_2[/code] and [code]custom_dialect[/code].
+				[codeblock]
+				input.set_default_language({ "iso639_2": "eng" })
+				[/codeblock]
+			</description>
+		</method>
+		<method name="to_json" qualifiers="const">
+			<return type="String" />
+			<description>
+				Returns the input as a JSON document, which [method from_json] can read back. Validates the input as the synthesis methods do, and returns an empty [String], printing an error, if it is invalid.
+			</description>
+		</method>
+	</methods>
+	<constants>
+		<constant name="ENDPOINT_START" value="0" enum="Endpoint">
+			The start of a segment.
+		</constant>
+		<constant name="ENDPOINT_END" value="1" enum="Endpoint">
+			The end of a segment.
+		</constant>
+	</constants>
+</class>
