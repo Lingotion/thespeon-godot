@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="ThespeonAudioStreamPlayback" inherits="AudioStreamPlaybackResampled" api_type="extension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Playback state of a [ThespeonAudioStream].
+	</brief_description>
+	<description>
+		Created by the audio system when a [ThespeonAudioStream] is played. It is not meant to be used directly.
+	</description>
+	<tutorials>
+	</tutorials>
+</class>

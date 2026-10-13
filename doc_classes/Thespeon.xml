@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="Thespeon" inherits="Node" api_type="extension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Synthesizes speech from a [ThespeonInput] with the installed Thespeon modules.
+	</brief_description>
+	<description>
+		Loads character and language modules from the addon's [code]runtime-files[/code] directory and synthesizes speech with them, either to a WAV file or as a [ThespeonAudioStream] that plays while it is being synthesized. Models stay loaded in the node between calls.
+		[b]Note:[/b] Every method except [method synthesize_stream] blocks the calling thread, so calling one from the main thread freezes the game until it finishes. Use [method preload_input] or [method preload_module] at a convenient moment, such as a loading screen, to keep the first synthesis fast.
+		[codeblock]
+		var input := ThespeonInput.new()
+		input.set_character("MyCharacter")
+		input.add_segment("Hello there!")
+		var stream: ThespeonAudioStream = $Thespeon.synthesize_stream(input)
+		$AudioStreamPlayer.stream = stream
+		$AudioStreamPlayer.play()
+		[/codeblock]
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_abi_version" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns the ABI version of the loaded Thespeon runtime library.
+			</description>
+		</method>
+		<method name="get_emotions_for_character">
+			<return type="Array" />
+			<param index="0" name="model" type="String" />
+			<param index="1" name="module_type" type="String" default="&quot;&quot;" />
+			<param index="2" name="module_version" type="String" default="&quot;&quot;" />
+			<description>
+				Returns the emotions a character accepts, as an [Array] of [Dictionary]s with the keys [code]name[/code] and [code]guide[/code].
+				[param model] is a module identifier or a character name. A name selects the largest, then newest, matching module, narrowed by [param module_type] and [param module_version] when they are not empty.
+				Returns an empty [Array], and prints an error, when no module matches.
+			</description>
+		</method>
+		<method name="get_resident_bytes">
+			<return type="int" />
+			<description>
+				Returns the number of bytes of memory held by the loaded modules.
+			</description>
+		</method>
+		<method name="is_input_loaded">
+			<return type="bool" />
+			<param index="0" name="input" type="ThespeonInput" />
+			<description>
+				Returns [code]true[/code] if everything [param input] needs is already loaded, meaning [method preload_input] would load nothing.
+			</description>
+		</method>
+		<method name="is_loaded">
+			<return type="bool" />
+			<param index="0" name="module_identifier" type="String" />
+			<description>
+				Returns [code]true[/code] if the character or language module [param module_identifier] is loaded. A character counts as loaded whatever languages it was preloaded with.
+			</description>
+		</method>
+		<method name="list_loaded">
+			<return type="Dictionary" />
+			<description>
+				Returns the same as [method list_models], restricted to the modules that are currently loaded, and without the [code]problems[/code] key.
+			</description>
+		</method>
+		<method name="list_models">
+			<return type="Dictionary" />
+			<description>
+				Returns the installed modules as a [Dictionary] with the keys:
+				- [code]characterModules[/code]: an [Array] of [Dictionary]s with [code]identifier[/code], [code]name[/code], [code]moduleType[/code], [code]version[/code], [code]languages[/code] and [code]emotionCount[/code]. Use [method get_emotions_for_character] for the emotions themselves.
+				- [code]languageModules[/code]: an [Array] of [Dictionary]s with [code]identifier[/code], [code]name[/code], [code]version[/code] and [code]languages[/code].
+				- [code]problems[/code]: a [PackedStringArray] describing any module config that could not be read.
+			</description>
+		</method>
+		<method name="preload_input">
+			<return type="int" enum="Error" />
+			<param index="0" name="input" type="ThespeonInput" />
+			<param index="1" name="warmup" type="bool" default="true" />
+			<description>
+				Loads the character and languages [param input] selects, as [method preload_module] does.
+			</description>
+		</method>
+		<method name="preload_module">
+			<return type="int" enum="Error" />
+			<param index="0" name="module_identifier" type="String" />
+			<param index="1" name="warmup" type="bool" default="true" />
+			<description>
+				Loads a character module ahead of its first synthesis. If [param warmup] is [code]true[/code], also runs a throwaway synthesis so that the first real one reaches steady-state latency.
+			</description>
+		</method>
+		<method name="refresh">
+			<return type="int" enum="Error" />
+			<description>
+				Re-reads the installed modules. Call it after [ThespeonImporter] has imported or deleted modules.
+			</description>
+		</method>
+		<method name="synthesize_stream">
+			<return type="ThespeonAudioStream" />
+			<param index="0" name="input" type="ThespeonInput" />
+			<description>
+				Starts synthesizing [param input] on a worker thread and returns at once. The returned [ThespeonAudioStream] plays as audio arrives.
+				The stream's signals are emitted on the main thread, no earlier than the next idle frame, so connecting to them right after this call misses nothing. [param input] is copied, so it may be changed or reused straight away.
+				Freeing this node, or the stream, cancels the synthesis. Returns [code]null[/code], and prints an error, if [param input] is invalid.
+			</description>
+		</method>
+		<method name="synthesize_wav">
+			<return type="int" enum="Error" />
+			<param index="0" name="input" type="ThespeonInput" />
+			<param index="1" name="output_path" type="String" />
+			<description>
+				Synthesizes [param input] and writes it as a WAV file to [param output_path], which may be a [code]res://[/code] or [code]user://[/code] path. Blocks until the file is written.
+			</description>
+		</method>
+		<method name="unload_input">
+			<return type="int" enum="Error" />
+			<param index="0" name="input" type="ThespeonInput" />
+			<description>
+				Unloads the character and languages [param input] selects, as [method unload_module] does.
+			</description>
+		</method>
+		<method name="unload_module">
+			<return type="int" enum="Error" />
+			<param index="0" name="module_identifier" type="String" />
+			<description>
+				Unloads a module loaded by [method preload_module] or by a synthesis, freeing its memory.
+			</description>
+		</method>
+		<method name="validate_input">
+			<return type="int" enum="Error" />
+			<param index="0" name="input" type="ThespeonInput" />
+			<description>
+				Returns [constant OK] if synthesis would accept [param input], including every emotion it names being one the character supports. No model is run, so a word the language module cannot pronounce is not caught.
+			</description>
+		</method>
+	</methods>
+</class>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="ThespeonAudioStream" inherits="AudioStream" api_type="extension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Speech audio from [method Thespeon.synthesize_stream].
+	</brief_description>
+	<description>
+		Plays while it is still being synthesized, and can be replayed once it has been. If playback catches up with synthesis, silence is played until more audio arrives. The stream's length is reported as [code]0[/code] until synthesis has finished.
+		Do not create this class yourself; get it from [method Thespeon.synthesize_stream].
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="cancel">
+			<return type="void" />
+			<description>
+				Stops synthesis. Audio received so far can still be played. [signal synthesis_finished] then reports [constant ERR_SKIP]. Dropping the last reference to the stream does the same.
+			</description>
+		</method>
+		<method name="get_sample_indices" qualifiers="const">
+			<return type="PackedInt64Array" />
+			<description>
+				Returns the sample index of each sample-request marker ([code]◎[/code], U+25CE) in the input text, in text order, once they are known. Empty before [signal samples_requested] has been emitted.
+			</description>
+		</method>
+		<method name="is_synthesizing" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] while synthesis is still running.
+			</description>
+		</method>
+	</methods>
+	<signals>
+		<signal name="samples_requested">
+			<param index="0" name="sample_indices" type="PackedInt64Array" />
+			<description>
+				Emitted once, before the first audio, when the positions of the sample-request markers ([code]◎[/code], U+25CE) in the input text are known. [param sample_indices] holds one index into the audio, at 44100 Hz, per marker, in text order. Use it to sync events with the speech.
+			</description>
+		</signal>
+		<signal name="synthesis_finished">
+			<param index="0" name="error" type="int" />
+			<description>
+				Emitted once synthesis has ended. [param error] is an [enum Error] code: [constant OK] on success, [constant ERR_SKIP] if it was cancelled, otherwise the reason it failed.
+			</description>
+		</signal>
+	</signals>
+</class>

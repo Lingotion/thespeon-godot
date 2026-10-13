@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://addons/lingotion-thespeon/demo/thespeon_demo.gd" id="1_37kl0"]
+
+[node name="ThespeonDemo" type="Node3D"]
+
+[node name="Thespeon" type="Thespeon" parent="."]
+script = ExtResource("1_37kl0")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Thespeon"]
